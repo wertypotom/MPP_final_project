@@ -1,6 +1,6 @@
 package controller;
 
-import model.User;
+import entity.User;
 
 public class AppController {
     private User currentUser;
@@ -17,7 +17,7 @@ public class AppController {
         currentUser = null;
     }
 
-    public boolean isAdmin() {
-        return currentUser != null && "Admin".equalsIgnoreCase(currentUser.getUserType());
-    }
+//    public boolean isAdmin() {
+//        return currentUser != null && "Admin".equalsIgnoreCase(currentUser.getUserType());
+//    }
 }

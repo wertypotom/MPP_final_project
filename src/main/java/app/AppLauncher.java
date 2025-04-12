@@ -1,7 +1,7 @@
 package app;
 
 import controller.AppController;
-import model.User;
+import entity.User;
 import view.LoginView;
 import view.MainView;
 

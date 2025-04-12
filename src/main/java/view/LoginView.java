@@ -1,7 +1,7 @@
 package view;
 
 import controller.AppController;
-import model.User;
+import entity.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,11 +39,11 @@ public class LoginView extends JFrame {
 
             // Mock login logic
             if (email.equalsIgnoreCase("admin@admin.com")) {
-                User admin = new User(1, "Admin", email, "Admin");
+                User admin = new User(email, "Admin");
                 controller.login(admin);
                 onLoginSuccess.accept(admin);
             } else {
-                User user = new User(2, "Regular User", email, "User");
+                User user = new User(email, "Regular User");
                 controller.login(user);
                 onLoginSuccess.accept(user);
             }
