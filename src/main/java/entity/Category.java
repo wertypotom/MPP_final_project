@@ -54,10 +54,18 @@ public class Category {
         this.modifiedDateTimeStamp = modifiedDateTimeStamp;
     }
 
+    public Category(Integer id, String categoryName, String description) {
+        this.categoryId = id;
+        this.categoryName = categoryName;
+        this.description = description;
+    }
+
     private Integer categoryId;
     private String categoryName;
     private String description;
     private LocalDate createdDateTimeStamp;
     private LocalDate modifiedDateTimeStamp;
+    private Integer createdUserId;
+    private Integer modifiedUserId;
 
 }
