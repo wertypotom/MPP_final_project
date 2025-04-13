@@ -8,8 +8,6 @@ import java.sql.SQLException;
 public class CategoryController {
     private AddCategoryDialog addCategoryDialog;
     private final CategoryService categoryService;
-
-
         public CategoryController(AddCategoryDialog dialog, CategoryService service) {
             this.addCategoryDialog = dialog;
             this.categoryService = service;
