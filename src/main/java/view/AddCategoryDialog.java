@@ -1,13 +1,15 @@
 package view;
 
+import service.CategoryService;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class AddCategoryDialog extends JDialog {
+    private final CategoryService categoryService = new CategoryService();
     private final JTextField nameField = new JTextField(20);
     private final JTextField descriptionField = new JTextField(20);
-    JButton submitBtn = new JButton("Submit");
 
     public AddCategoryDialog(JFrame parent) {
         super(parent, "Add Category", true);
@@ -25,14 +27,26 @@ public class AddCategoryDialog extends JDialog {
         form.add(descriptionField);
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
+        JButton submitBtn = new JButton("Submit");
         JButton cancelBtn = new JButton("Cancel");
 
         cancelBtn.addActionListener(e -> dispose());
 
         submitBtn.addActionListener(e -> {
-            // Handle data collection and validation
-            System.out.println("Category submitted: " + nameField.getText());
+            String name = getCategoryName();
+            String description = getCategoryDescription();
+
+            if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Category name is required.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            try {
+                categoryService.createCategory(name,description);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            JOptionPane.showMessageDialog(this, "Category added successfully!");
             dispose();
         });
 
@@ -41,9 +55,6 @@ public class AddCategoryDialog extends JDialog {
 
         add(form, BorderLayout.CENTER);
         add(buttons, BorderLayout.SOUTH);
-    }
-    public void addSubmitListener(ActionListener listener) {
-        submitBtn.addActionListener(listener);
     }
 
     public String getCategoryName() {

@@ -56,6 +56,11 @@ public class Category {
         this.modifiedDateTimeStamp = modifiedDateTimeStamp;
     }
 
+    public Category(String categoryName, String description) {
+        this.categoryName = categoryName;
+        this.description = description;
+    }
+
     public Category(int id, String categoryName, String description) {
         this.categoryId = id;
         this.categoryName = categoryName;

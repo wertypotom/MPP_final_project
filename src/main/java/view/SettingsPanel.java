@@ -3,7 +3,6 @@ package view;
 import controller.AppController;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.function.Consumer;
 
 public class SettingsPanel {

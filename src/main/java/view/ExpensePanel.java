@@ -19,9 +19,6 @@ public class ExpensePanel extends JPanel {
         tableModel = new DefaultTableModel(columns, 0);
         expenseTable = new JTable(tableModel);
 
-        tableModel.addRow(new Object[]{1, "Lunch", "Food at restaurant", 12.5, "Food", "2025-04-12"});
-        tableModel.addRow(new Object[]{2, "Book", "Java Programming", 35.0, "Education", "2025-04-10"});
-
         JScrollPane scrollPane = new JScrollPane(expenseTable);
         add(scrollPane, BorderLayout.CENTER);
     }

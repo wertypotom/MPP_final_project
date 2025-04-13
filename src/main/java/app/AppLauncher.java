@@ -1,8 +1,6 @@
 package app;
 
 import controller.AppController;
-import controller.CategoryController;
-import entity.User;
 import view.LoginView;
 import view.MainView;
 
@@ -16,10 +14,6 @@ public class AppLauncher {
             LoginView[] loginViewRef = new LoginView[1];
             loginViewRef[0] = new LoginView(controller, user -> {
                 MainView mainView = new MainView(controller, user);
-
-                // Create controllers for different views/components
-                new CategoryController(mainView.getAddCategoryDialog(), controller.getCategoryService());
-
                 mainView.setVisible(true);
                 loginViewRef[0].dispose();
             });

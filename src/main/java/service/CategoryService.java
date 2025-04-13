@@ -10,16 +10,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class CategoryService {
-
-    private final CategoryRepository categoryRepository;
-
-    public CategoryService() {
-        this.categoryRepository = new CategoryRepository();
-    }
+    private final CategoryRepository categoryRepository = new CategoryRepository();;
 
     // Create a new category
     public void createCategory(String name, String description) throws SQLException {
-        Category category = new Category(0, name, description);
+        Category category = new Category(name, description);
         categoryRepository.createCategory(category);
     }
 

@@ -19,9 +19,6 @@ public class CategoryPanel extends JPanel {
         tableModel = new DefaultTableModel(columns, 0);
         categoryTable = new JTable(tableModel);
 
-        tableModel.addRow(new Object[]{1, "Food", "Meals and groceries", "2025-04-01", "2025-04-10"});
-        tableModel.addRow(new Object[]{2, "Education", "Books and courses", "2025-03-15", "2025-04-05"});
-
         JScrollPane scrollPane = new JScrollPane(categoryTable);
         add(scrollPane, BorderLayout.CENTER);
     }
