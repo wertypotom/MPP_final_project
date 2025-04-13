@@ -2,10 +2,12 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class AddCategoryDialog extends JDialog {
     private final JTextField nameField = new JTextField(20);
     private final JTextField descriptionField = new JTextField(20);
+    JButton submitBtn = new JButton("Submit");
 
     public AddCategoryDialog(JFrame parent) {
         super(parent, "Add Category", true);
@@ -23,7 +25,7 @@ public class AddCategoryDialog extends JDialog {
         form.add(descriptionField);
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton submitBtn = new JButton("Submit");
+
         JButton cancelBtn = new JButton("Cancel");
 
         cancelBtn.addActionListener(e -> dispose());
@@ -39,4 +41,16 @@ public class AddCategoryDialog extends JDialog {
         add(form, BorderLayout.CENTER);
         add(buttons, BorderLayout.SOUTH);
     }
+    public void addSubmitListener(ActionListener listener) {
+        submitBtn.addActionListener(listener);
+    }
+
+    public String getCategoryName() {
+        return nameField.getText().trim();
+    }
+
+    public String getCategoryDescription() {
+        return descriptionField.getText().trim();
+    }
+
 }
