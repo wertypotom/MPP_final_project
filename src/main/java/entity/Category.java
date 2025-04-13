@@ -2,6 +2,8 @@ package entity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -67,5 +69,6 @@ public class Category {
     private LocalDate modifiedDateTimeStamp;
     private Integer createdUserId;
     private Integer modifiedUserId;
+    private Set<Expense> expenses = new HashSet<Expense>(0);
 
 }

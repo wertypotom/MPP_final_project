@@ -1,6 +1,7 @@
 package view;
 
 import controller.AppController;
+import controller.CategoryController;
 import entity.User;
 
 import javax.swing.*;
@@ -35,6 +36,15 @@ public class MainView extends JFrame {
         topPanel.add(settingsButton, BorderLayout.EAST);
         add(topPanel, BorderLayout.NORTH);
 
+        //TODO: just trying to wire up
+        JButton addCategoryButton = new JButton("Add Category");
+        addCategoryButton.addActionListener(e -> {
+            AddCategoryDialog dialog = getAddCategoryDialog();
+            new CategoryController(dialog, controller.getCategoryService());
+            dialog.setVisible(true);
+        });
+
+
         // Views
         views.put("home", new ExpensePanel());
         views.put("categories", new CategoryPanel());
@@ -44,6 +54,10 @@ public class MainView extends JFrame {
 
         add(contentPanel, BorderLayout.CENTER);
         cardLayout.show(contentPanel, "home");
+    }
+
+    public AddCategoryDialog getAddCategoryDialog() {
+        return new AddCategoryDialog(this);
     }
 
     private void navigateTo(String viewName) {

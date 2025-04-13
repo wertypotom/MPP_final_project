@@ -29,6 +29,7 @@ public class AddCategoryDialog extends JDialog {
         JButton cancelBtn = new JButton("Cancel");
 
         cancelBtn.addActionListener(e -> dispose());
+
         submitBtn.addActionListener(e -> {
             // Handle data collection and validation
             System.out.println("Category submitted: " + nameField.getText());
