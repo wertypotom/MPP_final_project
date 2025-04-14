@@ -76,4 +76,9 @@ public class Category {
     private Integer modifiedUserId;
     private Set<Expense> expenses = new HashSet<Expense>(0);
 
+    @Override
+    public String toString() {
+        return categoryName; // Or whatever field holds the readable label
+    }
+
 }

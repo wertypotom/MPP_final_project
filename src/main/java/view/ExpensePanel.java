@@ -3,6 +3,7 @@ package view;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class ExpensePanel extends JPanel {
     private JTable expenseTable;
@@ -28,7 +29,11 @@ public class ExpensePanel extends JPanel {
         JButton addButton = new JButton("Add Expense");
         addButton.addActionListener(e -> {
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-            new AddExpenseDialog(parentFrame).setVisible(true);
+            try {
+                new AddExpenseDialog(parentFrame).setVisible(true);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         });
         toolbar.add(addButton);
         add(toolbar, BorderLayout.SOUTH);
