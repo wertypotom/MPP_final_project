@@ -1,22 +1,28 @@
 package view;
 
+import entity.Expense;
+import service.CategoryService;
+import service.ExpenseService;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
+import java.util.List;
 
 public class ExpensePanel extends JPanel {
     private JTable expenseTable;
     private DefaultTableModel tableModel;
-
+    private final ExpenseService expenseService = new ExpenseService();
     public ExpensePanel() {
         setLayout(new BorderLayout());
         initTable();
         initToolbar();
+        loadExpenses();
     }
 
     private void initTable() {
-        String[] columns = {"ID", "Name", "Description", "Amount", "Category", "Date"};
+        String[] columns = {"ID", "Name", "Description", "Amount", "Category"};
         tableModel = new DefaultTableModel(columns, 0);
         expenseTable = new JTable(tableModel);
 
@@ -37,5 +43,26 @@ public class ExpensePanel extends JPanel {
         });
         toolbar.add(addButton);
         add(toolbar, BorderLayout.SOUTH);
+    }
+
+    private void loadExpenses() {
+        try {
+            List<Expense> expenses = expenseService.listExpenses();
+            tableModel.setRowCount(0); // Clear existing rows
+
+            for (Expense expense : expenses) {
+                tableModel.addRow(new Object[]{
+                        expense.getExpenseId(),
+                        expense.getName(),
+                        expense.getDescription(),
+                        expense.getAmount(),
+                        expenseService.getCategoryName(expense.getCategoryId())
+
+                });
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Failed to load expenses:\n" + ex.getMessage(),
+                    "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

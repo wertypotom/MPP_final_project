@@ -22,4 +22,5 @@ public class CategoryService {
     public List<Category> listCategories() throws SQLException {
         return categoryRepository.listCategories();
     }
+
 }

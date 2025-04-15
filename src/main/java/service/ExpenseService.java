@@ -22,4 +22,8 @@ public class ExpenseService {
     public List<Expense> listExpenses() throws SQLException {
         return expenseRepository.listExpenses();
     }
+
+    public String getCategoryName(Integer categoryId) throws SQLException {
+        return expenseRepository.getCategoryName(categoryId);
+    }
 }

@@ -46,10 +46,31 @@ public class ExpenseRepository {
                 BigDecimal amount = resultSet.getBigDecimal("amount");
                 int categoryId = resultSet.getInt("categoryId");
 
-                expenses.add(new Expense(id, name, description,amount,categoryId));
+                expenses.add(new Expense(id, name, description, amount, categoryId));
             }
         }
         return expenses;
     }
+
+
+    public String getCategoryName(Integer catId) throws SQLException {
+        String categoryName = "";
+
+        String query = "SELECT name FROM category WHERE id = ?";
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, catId);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                categoryName = resultSet.getString("name");
+            }
+        }
+
+        return categoryName;
+    }
+
 
 }
