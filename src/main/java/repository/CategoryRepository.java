@@ -34,6 +34,8 @@ public class CategoryRepository {
                 String description = resultSet.getString("description");
                 categories.add(new Category(id, name, description));
             }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return categories;
     }

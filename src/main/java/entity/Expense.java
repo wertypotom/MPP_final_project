@@ -12,15 +12,21 @@ public class Expense {
     private String name;
     private String description;
 
-    public Expense(Integer expenseId, String name, String description, BigDecimal amount, LocalDate createdDateTimeStamp, Integer categoryId, Integer userId) {
-        this.expenseId = expenseId;
+    public Expense(String name, String description, BigDecimal amount,Integer categoryId) {
         this.name = name;
         this.description = description;
         this.amount = amount;
         this.createdDateTimeStamp = LocalDateTime.now();
         this.categoryId = categoryId;
-        this.userId = userId;
     }
+
+    public Expense(Integer expenseId, String name, String description, BigDecimal amount,Integer categoryId) {
+        this(name,description,amount,categoryId);
+        this.expenseId = expenseId;
+
+    }
+
+
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
