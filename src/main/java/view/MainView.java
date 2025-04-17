@@ -37,9 +37,11 @@ public class MainView extends JFrame {
         // Views
         views.put("home", new ExpensePanel());
         views.put("categories", new CategoryPanel());
+        views.put("report", new ReportPanel());
 
         contentPanel.add(views.get("home"), "home");
         contentPanel.add(views.get("categories"), "categories");
+        contentPanel.add(views.get("report"), "report");
 
         add(contentPanel, BorderLayout.CENTER);
         cardLayout.show(contentPanel, "home");

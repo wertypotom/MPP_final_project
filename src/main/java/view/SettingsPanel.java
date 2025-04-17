@@ -18,6 +18,10 @@ public class SettingsPanel {
         categoryItem.addActionListener(e -> onNavigate.accept("categories"));
         menu.add(categoryItem);
 
+        JMenuItem reportItem = new JMenuItem("Report");
+        reportItem.addActionListener(e -> onNavigate.accept("report"));
+        menu.add(reportItem);
+
         JMenuItem logoutItem = new JMenuItem("Log Out");
         logoutItem.addActionListener(e -> onLogout.run());
         menu.add(logoutItem);
