@@ -2,6 +2,7 @@ package repository;
 
 import entity.Category;
 import entity.Expense;
+import util.DatabaseUtil;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -18,7 +19,7 @@ public class ExpenseRepository {
 
 
     public void createExpense(Expense expense) throws SQLException {
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+        try (Connection connection = DatabaseUtil.getConnection()) {
             String query = "INSERT INTO expense (name, description, amount,categoryId) VALUES (?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, expense.getName());
@@ -34,7 +35,7 @@ public class ExpenseRepository {
     // Read all expenses
     public List<Expense> listExpenses() throws SQLException {
         List<Expense> expenses = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+        try (Connection connection = DatabaseUtil.getConnection()) {
             String query = "SELECT * FROM expense";
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -58,7 +59,7 @@ public class ExpenseRepository {
 
         String query = "SELECT name FROM category WHERE id = ?";
 
-        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection connection = DatabaseUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setInt(1, catId);

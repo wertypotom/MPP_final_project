@@ -3,15 +3,18 @@ package controller;
 import entity.User;
 import service.CategoryService;
 import service.ExpenseService;
+import service.ReportService;
 
 public class AppController {
     private User currentUser;
     private final CategoryService categoryService;
     private final ExpenseService expenseService;
+    private final ReportService reportService;
 
     public AppController() {
         this.categoryService = new CategoryService();
         this.expenseService = new ExpenseService();
+        this.reportService = new ReportService();
     }
 
     public CategoryService getCategoryService() {
@@ -20,6 +23,10 @@ public class AppController {
 
     public ExpenseService getExpenseService() {
         return expenseService;
+    }
+
+    public ReportService getReportService() {
+        return reportService;
     }
 
     public void login(User user) {
