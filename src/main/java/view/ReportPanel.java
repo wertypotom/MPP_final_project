@@ -22,6 +22,8 @@ public class ReportPanel extends JPanel {
     private JDatePickerImpl fromDatePicker;
     private JDatePickerImpl toDatePicker;
     private JComboBox<Category> categoryBox;
+    private JLabel totalAmountLabel;
+
     private final ReportService reportService = new ReportService();
 
     public ReportPanel() {
@@ -76,6 +78,15 @@ public class ReportPanel extends JPanel {
         expenseTable = new JTable(tableModel);
         JScrollPane scrollPane = new JScrollPane(expenseTable);
         add(scrollPane, BorderLayout.CENTER);
+
+        totalAmountLabel = new JLabel("Total Amount: 0.00");
+        totalAmountLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        totalAmountLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottomPanel.add(totalAmountLabel);
+
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     private void loadReport() {
@@ -99,7 +110,7 @@ public class ReportPanel extends JPanel {
 
             // Fetch from service
             List<ExpenseReport> data = reportService.getExpenseReport(fromDate, toDate, categoryId);
-
+            double totalAmount = 0.0;
             // Populate table
             tableModel.setRowCount(0);
             for (ExpenseReport d : data) {
@@ -109,8 +120,9 @@ public class ReportPanel extends JPanel {
                         d.getAmount(),
                         d.getDescription()
                 });
+                totalAmount += d.getAmount();
             }
-
+            totalAmountLabel.setText(String.format("Total Amount: %.2f", totalAmount));
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Failed to load report:\n" + e.getMessage(),
                     "Database Error", JOptionPane.ERROR_MESSAGE);

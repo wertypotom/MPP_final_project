@@ -19,7 +19,7 @@ public class ReportRepository {
                         "c.name AS categoryName " +
                         "FROM expense e " +
                         "JOIN category c ON e.categoryId = c.id " +
-                        "WHERE e.createdOn BETWEEN ? AND ?";
+                        "WHERE Date(e.createdOn) BETWEEN ? AND ?";
 
         if (catId != 0) {
             query += " AND e.categoryId = ?";
