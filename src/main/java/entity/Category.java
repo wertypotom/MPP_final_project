@@ -36,6 +36,22 @@ public class Category {
         this.description = description;
     }
 
+    public Integer getCreatedUserId() {
+        return createdUserId;
+    }
+
+    public void setCreatedUserId(Integer createdUserId) {
+        this.createdUserId = createdUserId;
+    }
+
+    public Integer getModifiedUserId() {
+        return modifiedUserId;
+    }
+
+    public void setModifiedUserId(Integer modifiedUserId) {
+        this.modifiedUserId = modifiedUserId;
+    }
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdDate", nullable = false, length = 19)
     public LocalDate getCreatedDateTimeStamp() {
@@ -65,6 +81,12 @@ public class Category {
         this.categoryId = id;
         this.categoryName = categoryName;
         this.description = description;
+    }
+
+    public Category(String categoryName, String description, int createdUserId) {
+        this.categoryName = categoryName;
+        this.description = description;
+        this.createdUserId = createdUserId;
     }
 
     private int categoryId;

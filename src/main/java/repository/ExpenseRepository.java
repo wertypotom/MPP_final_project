@@ -20,14 +20,14 @@ public class ExpenseRepository {
 
     public void createExpense(Expense expense) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "INSERT INTO expense (name, description, amount,categoryId) VALUES (?,?,?,?)";
+            String query = "INSERT INTO expense (name, description, amount, categoryId, userId) VALUES (?,?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, expense.getName());
             statement.setString(2, expense.getDescription());
             statement.setBigDecimal(3, expense.getAmount());
             //statement.setTimestamp(4, java.sql.Timestamp.valueOf(expense.getCreatedDateTimeStamp()));
             statement.setInt(4, expense.getCategoryId());
-
+            statement.setInt(5,expense.getUserId());
             statement.executeUpdate();
         }
     }

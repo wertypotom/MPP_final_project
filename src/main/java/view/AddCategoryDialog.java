@@ -42,7 +42,7 @@ public class AddCategoryDialog extends JDialog {
             }
 
             try {
-                categoryService.createCategory(name,description);
+                categoryService.createCategory(name,description,1);//1 is temporary, will replace once user id is available from login
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }

@@ -12,10 +12,12 @@ public class CategoryRepository {
     // Create a new user
     public void createCategory(Category category) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "INSERT INTO category (name, description) VALUES (?, ?)";
+            String query = "INSERT INTO category (name, description, createdUserId, modifiedUserId) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, category.getCategoryName());
             statement.setString(2, category.getDescription());
+            statement.setInt(3, category.getCreatedUserId());
+            statement.setInt(4, category.getCreatedUserId());
             statement.executeUpdate();
         }
     }

@@ -26,7 +26,14 @@ public class Expense {
 
     }
 
-
+    public Expense(String name, String description, BigDecimal amount,Integer categoryId, Integer userId) {
+        this.name = name;
+        this.description = description;
+        this.amount = amount;
+        this.createdDateTimeStamp = LocalDateTime.now();
+        this.categoryId = categoryId;
+        this.userId = userId;
+    }
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

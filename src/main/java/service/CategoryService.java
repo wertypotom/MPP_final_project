@@ -13,8 +13,8 @@ public class CategoryService {
     private final CategoryRepository categoryRepository = new CategoryRepository();;
 
     // Create a new category
-    public void createCategory(String name, String description) throws SQLException {
-        Category category = new Category(name, description);
+    public void createCategory(String name, String description, int createdUserId) throws SQLException {
+        Category category = new Category(name, description, createdUserId);
         categoryRepository.createCategory(category);
     }
 

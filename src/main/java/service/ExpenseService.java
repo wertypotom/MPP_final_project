@@ -13,8 +13,8 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository = new ExpenseRepository();;
 
     // Create a new category
-    public void createExpense(String name, String description, BigDecimal amount,Integer categoryId) throws SQLException {
-        Expense expense = new Expense(name,description,amount,categoryId);
+    public void createExpense(String name, String description, BigDecimal amount,Integer categoryId, Integer userId) throws SQLException {
+        Expense expense = new Expense(name,description,amount,categoryId,userId);
         expenseRepository.createExpense(expense);
     }
 

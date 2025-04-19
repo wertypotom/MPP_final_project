@@ -67,7 +67,7 @@ public class AddExpenseDialog extends JDialog {
 
 
             try {
-                expenseService.createExpense(name,description,amount,category.getCategoryId());
+                expenseService.createExpense(name,description,amount,category.getCategoryId(),3);//3 is temporary and will replace with login user id later
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
