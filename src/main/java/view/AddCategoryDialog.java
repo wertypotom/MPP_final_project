@@ -1,5 +1,6 @@
 package view;
 
+import entity.user.User;
 import service.CategoryService;
 
 import javax.swing.*;
@@ -10,9 +11,12 @@ public class AddCategoryDialog extends JDialog {
     private final CategoryService categoryService = new CategoryService();
     private final JTextField nameField = new JTextField(20);
     private final JTextField descriptionField = new JTextField(20);
+    private User user;
 
-    public AddCategoryDialog(JFrame parent) {
+    public AddCategoryDialog(JFrame parent, User user) {
         super(parent, "Add Category", true);
+        this.user = user;
+
         setSize(300, 200);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
@@ -42,7 +46,7 @@ public class AddCategoryDialog extends JDialog {
             }
 
             try {
-                categoryService.createCategory(name,description,1);//1 is temporary, will replace once user id is available from login
+                categoryService.createCategory(name,description, user.getUserId());
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }

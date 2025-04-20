@@ -4,6 +4,7 @@ import entity.Category;
 import entity.user.User;
 import factory.UserFactory;
 import util.DatabaseUtil;
+import util.DatabaseDialect;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -11,7 +12,8 @@ import java.sql.*;
 public class UserRepository {
     public User getUserByEmailAndPassword(String email, String password) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "SELECT * FROM \"User\" WHERE email = ?";
+            String table = DatabaseDialect.getProcessedTableName("User");
+            String query = "SELECT * FROM " + table + " WHERE email = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, email);
             ResultSet resultSet = statement.executeQuery();

@@ -2,6 +2,7 @@ package repository;
 
 import entity.Expense;
 import util.DatabaseUtil;
+import util.DatabaseDialect;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -11,7 +12,8 @@ import java.util.List;
 public class ExpenseRepository {
     public void createExpense(Expense expense) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "INSERT INTO Expense (name, description, amount, categoryId, userId) VALUES (?,?,?,?,?)";
+            String table = DatabaseDialect.getProcessedTableName("Expense");
+            String query = "INSERT INTO " + table + " (name, description, amount, categoryId, userId) VALUES (?,?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, expense.getName());
             statement.setString(2, expense.getDescription());
@@ -27,7 +29,8 @@ public class ExpenseRepository {
     public List<Expense> listExpenses() throws SQLException {
         List<Expense> expenses = new ArrayList<>();
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "SELECT * FROM Expense";
+            String table = DatabaseDialect.getProcessedTableName("Expense");
+            String query = "SELECT * FROM " + table;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 

@@ -1,5 +1,6 @@
 package view;
 
+import entity.user.User;
 import service.CategoryService;
 import entity.Category;
 
@@ -13,8 +14,10 @@ public class CategoryPanel extends JPanel {
     private JTable categoryTable;
     private DefaultTableModel tableModel;
     private final CategoryService categoryService = new CategoryService();
+    private User user;
 
-    public CategoryPanel() {
+    public CategoryPanel(User user) {
+        this.user = user;
         setLayout(new BorderLayout());
         initTable();
         initToolbar();
@@ -36,7 +39,7 @@ public class CategoryPanel extends JPanel {
 
         addButton.addActionListener(e -> {
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-            AddCategoryDialog dialog = new AddCategoryDialog(parentFrame);
+            AddCategoryDialog dialog = new AddCategoryDialog(parentFrame, user);
             dialog.setVisible(true);
 
             loadCategories();

@@ -37,4 +37,8 @@ public class DatabaseUtil {
                 props.getProperty(dbType + ".password")
         );
     }
+
+    public static String getDbType() {
+        return props.getProperty("db.type").toLowerCase();
+    }
 }
