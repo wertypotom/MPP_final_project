@@ -9,9 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryRepository {
+    private final String table = DatabaseDialect.getProcessedTableName("Category");
+
     public void createCategory(Category category) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String table = DatabaseDialect.getProcessedTableName("Category");
             String query = "INSERT INTO " + table + " (name, description, createdUserId, modifiedUserId) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, category.getCategoryName());
@@ -30,7 +31,6 @@ public class CategoryRepository {
     public List<Category> listCategories() throws SQLException {
         List<Category> categories = new ArrayList<>();
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String table = DatabaseDialect.getProcessedTableName("Category");
             String query = "SELECT * FROM " + table;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);

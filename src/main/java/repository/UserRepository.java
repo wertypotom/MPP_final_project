@@ -10,9 +10,10 @@ import java.math.BigDecimal;
 import java.sql.*;
 
 public class UserRepository {
+    private final String table = DatabaseDialect.getProcessedTableName("User");
+
     public User getUserByEmailAndPassword(String email, String password) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String table = DatabaseDialect.getProcessedTableName("User");
             String query = "SELECT * FROM " + table + " WHERE email = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, email);

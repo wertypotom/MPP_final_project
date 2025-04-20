@@ -1,20 +1,25 @@
 package view;
 
+import entity.user.User;
+import entity.user.Admin;
+
 import javax.swing.*;
 import java.util.function.Consumer;
 
 public class SettingsPanel {
-    public static void show(JFrame parent, JButton anchor,
-                            Consumer<String> onNavigate, Runnable onLogout) {
+    public static void show(JButton anchor,
+                            Consumer<String> onNavigate, Runnable onLogout, User user) {
         JPopupMenu menu = new JPopupMenu();
 
         JMenuItem homeItem = new JMenuItem("Home");
         homeItem.addActionListener(e -> onNavigate.accept("home"));
         menu.add(homeItem);
 
-        JMenuItem categoryItem = new JMenuItem("Category Management");
-        categoryItem.addActionListener(e -> onNavigate.accept("categories"));
-        menu.add(categoryItem);
+        if (user instanceof Admin) {
+            JMenuItem categoryItem = new JMenuItem("Category Management");
+            categoryItem.addActionListener(e -> onNavigate.accept("categories"));
+            menu.add(categoryItem);
+        }
 
         JMenuItem reportItem = new JMenuItem("Report");
         reportItem.addActionListener(e -> onNavigate.accept("report"));

@@ -10,9 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExpenseRepository {
+    private final String table = DatabaseDialect.getProcessedTableName("Expense");
+
     public void createExpense(Expense expense) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String table = DatabaseDialect.getProcessedTableName("Expense");
             String query = "INSERT INTO " + table + " (name, description, amount, categoryId, userId) VALUES (?,?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, expense.getName());
@@ -29,7 +30,6 @@ public class ExpenseRepository {
     public List<Expense> listExpenses() throws SQLException {
         List<Expense> expenses = new ArrayList<>();
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String table = DatabaseDialect.getProcessedTableName("Expense");
             String query = "SELECT * FROM " + table;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);

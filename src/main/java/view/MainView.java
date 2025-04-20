@@ -24,7 +24,7 @@ public class MainView extends JFrame {
         JPanel topPanel = new JPanel(new BorderLayout());
         JButton settingsButton = new JButton("⚙");
         settingsButton.addActionListener(e -> {
-            SettingsPanel.show(this, settingsButton, this::navigateTo, this::logout);
+            SettingsPanel.show(settingsButton, this::navigateTo, this::logout, user);
         });
 
         topPanel.add(new JLabel("Welcome, " + user.getName()), BorderLayout.WEST);
