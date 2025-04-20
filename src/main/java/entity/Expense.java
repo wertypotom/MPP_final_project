@@ -7,10 +7,14 @@ import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+@Entity
+@Table(name = "Expense")
 public class Expense {
     private Integer expenseId;
     private String name;
     private String description;
+
+    public Expense() {}
 
     public Expense(String name, String description, BigDecimal amount,Integer categoryId) {
         this.name = name;

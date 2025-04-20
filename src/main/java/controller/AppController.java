@@ -1,6 +1,6 @@
 package controller;
 
-import entity.User;
+import entity.user.User;
 import service.CategoryService;
 import service.ExpenseService;
 import service.ReportService;

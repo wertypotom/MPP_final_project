@@ -1,17 +1,20 @@
 package view;
 
 import controller.AppController;
-import entity.User;
+import entity.user.User;
+import service.UserService;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.SQLException;
 import java.util.function.Consumer;
 
 public class LoginView extends JFrame {
     private final JTextField emailField = new JTextField(20);
     private final JPasswordField passwordField = new JPasswordField(20);
     private final Consumer<User> onLoginSuccess;
+    private final UserService userService = new UserService();
 
     public LoginView(AppController controller, Consumer<User> onLoginSuccess) {
         this.onLoginSuccess = onLoginSuccess;
@@ -37,16 +40,12 @@ public class LoginView extends JFrame {
             String email = emailField.getText();
             String password = new String(passwordField.getPassword());
 
-            // Mock login logic
-            if (email.equalsIgnoreCase("admin@admin.com")) {
-                User admin = new User(email, "Admin");
-                controller.login(admin);
-                onLoginSuccess.accept(admin);
-            } else {
-                User user = new User(email, "Regular User");
-                controller.login(user);
-                onLoginSuccess.accept(user);
+            try {
+                User user = userService.loginUser(email, password);
+            } catch (SQLException ex) {
+                new LoginFailedDialog(this).setVisible(true);
             }
+
         });
 
         panel.add(loginButton);

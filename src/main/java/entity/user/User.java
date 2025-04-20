@@ -1,12 +1,17 @@
-package entity;
+package entity.user;
 
+import entity.Category;
+import entity.Expense;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-public class User {
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "userType", discriminatorType = DiscriminatorType.STRING)
+public abstract class User {
 
     @Column(name = "id")
     @Id
@@ -15,18 +20,20 @@ public class User {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    @Column(name = "name")
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String name) {
+        this.name = name;
     }
 
+    @Column(name = "email", unique = true, nullable = false)
     public String getEmail() {
         return email;
     }
@@ -35,6 +42,7 @@ public class User {
         this.email = email;
     }
 
+    @Column(name = "password", nullable = false)
     public String getPassword() {
         return password;
     }
@@ -43,14 +51,7 @@ public class User {
         this.password = password;
     }
 
-    public userType getRole() {
-        return role;
-    }
-
-    public void setRole(userType role) {
-        this.role = role;
-    }
-
+    @Column(name = "budgetLimit")
     public BigDecimal getBudgetLimit() {
         return budgetLimit;
     }
@@ -69,26 +70,38 @@ public class User {
         return this.categories;
     }
 
-
     private int userId;
-    private String userName;
+    private String name;
     private String email;
     private String password;
-    private userType role;
     private BigDecimal budgetLimit;
 
     private Set<Category> categories = new HashSet<Category>(0);
     private Set<Expense> expenses = new HashSet<Expense>(0);
 
+    public User() {}
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
-    public User(int userId, String userName, String email) {
+    public User(int userId, String name, String email) {
         this.userId = userId;
-        this.userName = userName;
+        this.name = name;
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", budgetLimit=" + budgetLimit +
+                ", categories=" + categories +
+                ", expenses=" + expenses +
+                '}';
     }
 }

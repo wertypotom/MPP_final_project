@@ -1,7 +1,6 @@
 package repository;
 
 import entity.Category;
-import entity.User;
 import util.DatabaseUtil;
 
 import java.sql.*;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryRepository {
-    // Create a new user
     public void createCategory(Category category) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
             String query = "INSERT INTO category (name, description, createdUserId, modifiedUserId) VALUES (?, ?, ?, ?)";
@@ -22,7 +20,6 @@ public class CategoryRepository {
         }
     }
 
-    // Read all categories
     public List<Category> listCategories() throws SQLException {
         List<Category> categories = new ArrayList<>();
         try (Connection connection = DatabaseUtil.getConnection()) {

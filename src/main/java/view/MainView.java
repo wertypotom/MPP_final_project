@@ -1,7 +1,7 @@
 package view;
 
 import controller.AppController;
-import entity.User;
+import entity.user.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +30,7 @@ public class MainView extends JFrame {
             SettingsPanel.show(this, settingsButton, controller, this::navigateTo, this::logout);
         });
 
-        topPanel.add(new JLabel("Welcome, " + user.getUserName()), BorderLayout.WEST);
+        topPanel.add(new JLabel("Welcome, " + user.getName()), BorderLayout.WEST);
         topPanel.add(settingsButton, BorderLayout.EAST);
         add(topPanel, BorderLayout.NORTH);
 

@@ -1,10 +1,7 @@
 package service;
 
 import entity.Category;
-import entity.Expense;
-import entity.User;
 import repository.CategoryRepository;
-import repository.UserRepository;
 
 import java.sql.SQLException;
 import java.util.List;

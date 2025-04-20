@@ -7,6 +7,8 @@ import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+@Entity
+@Table(name = "Category") // optional
 public class Category {
 
     @Id
@@ -15,6 +17,8 @@ public class Category {
     public int getCategoryId() {
         return categoryId;
     }
+
+    public Category() {}
 
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
