@@ -10,7 +10,7 @@ import java.util.List;
 public class CategoryRepository {
     public void createCategory(Category category) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "INSERT INTO category (name, description, createdUserId, modifiedUserId) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO Category (name, description, createdUserId, modifiedUserId) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, category.getCategoryName());
             statement.setString(2, category.getDescription());
@@ -23,7 +23,7 @@ public class CategoryRepository {
     public List<Category> listCategories() throws SQLException {
         List<Category> categories = new ArrayList<>();
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "SELECT * FROM category";
+            String query = "SELECT * FROM Category";
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 

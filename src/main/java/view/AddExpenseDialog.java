@@ -56,23 +56,24 @@ public class AddExpenseDialog extends JDialog {
             String description = getExpenseDescription();
             Category category = getSelectedCategory();
 
-            if (name.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Expense name is required.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            if (name.isEmpty() || description.isEmpty() || category == null) {
+                JOptionPane.showMessageDialog(this, "Please fill in all fields.", "Validation Error", JOptionPane.WARNING_MESSAGE);
                 return;
             }
+
             BigDecimal amount = getExpenseAmount();
             if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+                JOptionPane.showMessageDialog(this, "Amount must be greater than zero.", "Validation Error", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-
             try {
-                expenseService.createExpense(name,description,amount,category.getCategoryId(),3);//3 is temporary and will replace with login user id later
+                expenseService.createExpense(name, description, amount, category.getCategoryId(), 3); // 3 is temporary and will be replaced
+                JOptionPane.showMessageDialog(this, "Expense added successfully!");
+                dispose();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
-            JOptionPane.showMessageDialog(this, "Expense added successfully!");
-            dispose();
         });
 
         buttons.add(cancelBtn);

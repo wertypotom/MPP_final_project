@@ -11,7 +11,7 @@ import java.util.List;
 public class ExpenseRepository {
     public void createExpense(Expense expense) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "INSERT INTO expense (name, description, amount, categoryId, userId) VALUES (?,?,?,?,?)";
+            String query = "INSERT INTO Expense (name, description, amount, categoryId, userId) VALUES (?,?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, expense.getName());
             statement.setString(2, expense.getDescription());
@@ -27,7 +27,7 @@ public class ExpenseRepository {
     public List<Expense> listExpenses() throws SQLException {
         List<Expense> expenses = new ArrayList<>();
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "SELECT * FROM expense";
+            String query = "SELECT * FROM Expense";
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 

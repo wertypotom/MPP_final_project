@@ -1,6 +1,5 @@
 package view;
 
-import controller.AppController;
 import entity.user.User;
 import service.UserService;
 
@@ -16,16 +15,16 @@ public class LoginView extends JFrame {
     private final Consumer<User> onLoginSuccess;
     private final UserService userService = new UserService();
 
-    public LoginView(AppController controller, Consumer<User> onLoginSuccess) {
+    public LoginView(Consumer<User> onLoginSuccess) {
         this.onLoginSuccess = onLoginSuccess;
         setTitle("Login");
         setSize(350, 200);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        initUI(controller);
+        initUI();
     }
 
-    private void initUI(AppController controller) {
+    private void initUI() {
         JPanel panel = new JPanel(new GridLayout(4, 1, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -42,6 +41,7 @@ public class LoginView extends JFrame {
 
             try {
                 User user = userService.loginUser(email, password);
+                onLoginSuccess.accept(user);
             } catch (SQLException ex) {
                 new LoginFailedDialog(this).setVisible(true);
             }

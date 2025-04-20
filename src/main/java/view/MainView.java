@@ -1,6 +1,5 @@
 package view;
 
-import controller.AppController;
 import entity.user.User;
 
 import javax.swing.*;
@@ -11,11 +10,9 @@ import java.util.Map;
 public class MainView extends JFrame {
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel contentPanel = new JPanel(cardLayout);
-    private final AppController controller;
     private final Map<String, JPanel> views = new HashMap<>();
 
-    public MainView(AppController controller, User user) {
-        this.controller = controller;
+    public MainView(User user) {
         setTitle("Expense Manager");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(800, 600);
@@ -27,7 +24,7 @@ public class MainView extends JFrame {
         JPanel topPanel = new JPanel(new BorderLayout());
         JButton settingsButton = new JButton("⚙");
         settingsButton.addActionListener(e -> {
-            SettingsPanel.show(this, settingsButton, controller, this::navigateTo, this::logout);
+            SettingsPanel.show(this, settingsButton, this::navigateTo, this::logout);
         });
 
         topPanel.add(new JLabel("Welcome, " + user.getName()), BorderLayout.WEST);
@@ -52,10 +49,9 @@ public class MainView extends JFrame {
     }
 
     private void logout() {
-        controller.logout();
         dispose();
-        new LoginView(controller, user -> {
-            MainView mv = new MainView(controller, user);
+        new LoginView(user -> {
+            MainView mv = new MainView(user);
             mv.setVisible(true);
         }).setVisible(true);
     }

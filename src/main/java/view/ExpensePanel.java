@@ -48,7 +48,7 @@ public class ExpensePanel extends JPanel {
     private void loadExpenses() {
         try {
             List<Expense> expenses = expenseService.listExpenses();
-            tableModel.setRowCount(0); // Clear existing rows
+            tableModel.setRowCount(0);
 
             for (Expense expense : expenses) {
                 tableModel.addRow(new Object[]{

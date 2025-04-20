@@ -1,12 +1,10 @@
 package view;
 
-import controller.AppController;
-
 import javax.swing.*;
 import java.util.function.Consumer;
 
 public class SettingsPanel {
-    public static void show(JFrame parent, JButton anchor, AppController controller,
+    public static void show(JFrame parent, JButton anchor,
                             Consumer<String> onNavigate, Runnable onLogout) {
         JPopupMenu menu = new JPopupMenu();
 
