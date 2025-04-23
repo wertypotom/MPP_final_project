@@ -2,7 +2,6 @@ package view;
 
 import entity.Expense;
 import entity.UserSession;
-import entity.user.User;
 import service.ExpenseService;
 
 import javax.swing.*;
@@ -12,26 +11,15 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ExpensePanel extends JPanel {
-    private JTable expenseTable;
-    private DefaultTableModel tableModel;
-    private final ExpenseService expenseService = new ExpenseService();
-    private User user;
+    JTable expenseTable;
+    DefaultTableModel tableModel;
+    final ExpenseService expenseService = new ExpenseService();
 
     public ExpensePanel() {
-        this.user = user;
         setLayout(new BorderLayout());
-        initTable();
         initToolbar();
+        initTable();
         loadExpenses();
-    }
-
-    private void initTable() {
-        String[] columns = {"ID", "Name", "Description", "Amount", "Category"};
-        tableModel = new DefaultTableModel(columns, 0);
-        expenseTable = new JTable(tableModel);
-
-        JScrollPane scrollPane = new JScrollPane(expenseTable);
-        add(scrollPane, BorderLayout.CENTER);
     }
 
     private void initToolbar() {
@@ -42,42 +30,72 @@ public class ExpensePanel extends JPanel {
             try {
                 new AddExpenseDialog(parentFrame, this).setVisible(true);
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                JOptionPane.showMessageDialog(this, "Failed to open dialog: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
         toolbar.add(addButton);
         add(toolbar, BorderLayout.SOUTH);
     }
 
+    private void initTable() {
+        String[] columns = {"Name", "Description", "Amount", "Category", ""};
+        tableModel = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 4;
+            }
+        };
+
+        expenseTable = new JTable(tableModel);
+        expenseTable.setRowHeight(32);
+        expenseTable.getColumnModel().getColumn(4).setMinWidth(70);
+        expenseTable.getColumnModel().getColumn(4).setMaxWidth(80);
+        expenseTable.getColumnModel().getColumn(4).setPreferredWidth(75);
+
+        ExpenseTableButtons buttonCell = new ExpenseTableButtons(this);
+        expenseTable.getColumnModel().getColumn(4).setCellRenderer(buttonCell);
+        expenseTable.getColumnModel().getColumn(4).setCellEditor(buttonCell);
+
+        expenseTable.getColumnModel().getColumn(0).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
+            JLabel label = new JLabel();
+            if (value instanceof Expense expense) {
+                label.setText(expense.getName());
+            } else {
+                label.setText(String.valueOf(value));
+            }
+            return label;
+        });
+
+        JScrollPane scrollPane = new JScrollPane(expenseTable);
+        add(scrollPane, BorderLayout.CENTER);
+    }
+
     private void loadExpenses() {
         try {
             List<Expense> expenses = expenseService.listExpenses(UserSession.getInstance().getUserId());
             tableModel.setRowCount(0);
-
-            System.out.println("Expense count: " + expenses);
             for (Expense expense : expenses) {
                 tableModel.addRow(new Object[]{
-                        expense.getExpenseId(),
-                        expense.getName(),
+                        expense,
                         expense.getDescription(),
                         expense.getAmount(),
-                        expenseService.getCategoryName(expense.getCategoryId())
+                        expenseService.getCategoryName(expense.getCategoryId()),
+                        null
                 });
             }
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Failed to load expenses:\n" + ex.getMessage(),
-                    "Database Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to load expenses:\n" + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public void addExpenseToTable(Expense expense) {
         try {
             tableModel.addRow(new Object[]{
-                    expense.getExpenseId(),
-                    expense.getName(),
+                    expense,
                     expense.getDescription(),
                     expense.getAmount(),
-                    expenseService.getCategoryName(expense.getCategoryId())
+                    expenseService.getCategoryName(expense.getCategoryId()),
+                    null
             });
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Failed to load category name:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

@@ -16,6 +16,11 @@ public class ExpenseService {
         return expenseRepository.createExpense(expense);
     }
 
+    // delete expense with specific id
+    public void deleteExpense(int expenseId) throws SQLException {
+        expenseRepository.deleteExpenseById(expenseId);
+    }
+
     // Read all expenses of user
     public List<Expense> listExpenses(int userId) throws SQLException {
         return expenseRepository.listExpenses(userId);

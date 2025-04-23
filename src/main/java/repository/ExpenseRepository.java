@@ -75,5 +75,20 @@ public class ExpenseRepository {
         return categoryName;
     }
 
+    public void deleteExpenseById(int expenseId) throws SQLException {
+        String query = "DELETE FROM " + expenseTable + " WHERE id = ?";
+        try (Connection connection = DatabaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
+            statement.setInt(1, expenseId);
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Deleting expense failed, no rows affected. Expense ID: " + expenseId);
+            }
+
+        } catch (SQLException e) {
+            throw new SQLException("Error deleting expense with ID " + expenseId + ": " + e.getMessage(), e);
+        }
+    }
 }
