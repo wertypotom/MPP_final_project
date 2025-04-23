@@ -18,7 +18,8 @@ public class Category {
         return categoryId;
     }
 
-    public Category() {}
+    public Category() {
+    }
 
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
@@ -76,11 +77,6 @@ public class Category {
         this.modifiedDateTimeStamp = modifiedDateTimeStamp;
     }
 
-    public Category(String categoryName, String description) {
-        this.categoryName = categoryName;
-        this.description = description;
-    }
-
     public Category(int id, String categoryName, String description) {
         this.categoryId = id;
         this.categoryName = categoryName;
@@ -91,6 +87,13 @@ public class Category {
         this.categoryName = categoryName;
         this.description = description;
         this.createdUserId = createdUserId;
+    }
+
+    public Category(int id, String categoryName, String description, int modifiedUserId) {
+        this.categoryId = id;
+        this.categoryName = categoryName;
+        this.description = description;
+        this.createdUserId = modifiedUserId;
     }
 
     private int categoryId;
