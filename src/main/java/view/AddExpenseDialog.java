@@ -20,15 +20,21 @@ public class AddExpenseDialog extends JDialog {
     private final JTextField amountField = new JTextField(10);
     private final JComboBox<Category> categoryList = new JComboBox<>();
     private final ExpensePanel expensePanel;
+    private final Expense editingExpense;
 
     public AddExpenseDialog(JFrame parent, ExpensePanel expensePanel) throws SQLException {
-        super(parent, "Add Expense", true);
+        this(parent, expensePanel, null);
+    }
+
+    public AddExpenseDialog(JFrame parent, ExpensePanel expensePanel, Expense expenseToEdit) throws SQLException {
+        super(parent, expenseToEdit == null ? "Add Expense" : "Edit Expense", true);
         this.expensePanel = expensePanel;
+        this.editingExpense = expenseToEdit;
         setSize(350, 300);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
-        // Load categories from the service and populate dropdown
+        // Load categories
         List<Category> categories = categoryService.listCategories();
         for (Category category : categories) {
             categoryList.addItem(category);
@@ -49,14 +55,30 @@ public class AddExpenseDialog extends JDialog {
         form.add(new JLabel("Category:"));
         form.add(categoryList);
 
+        // Prefill fields if editing
+        if (editingExpense != null) {
+            nameField.setText(editingExpense.getName());
+            descriptionField.setText(editingExpense.getDescription());
+            amountField.setText(editingExpense.getAmount().toString());
+
+            for (int i = 0; i < categoryList.getItemCount(); i++) {
+                if (categoryList.getItemAt(i).getCategoryId() == editingExpense.getCategoryId()) {
+                    categoryList.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton submitBtn = new JButton("Submit");
         JButton cancelBtn = new JButton("Cancel");
 
         cancelBtn.addActionListener(e -> dispose());
+
         submitBtn.addActionListener(e -> {
             String name = getExpenseName();
             String description = getExpenseDescription();
+            BigDecimal amount = getExpenseAmount();
             Category category = getSelectedCategory();
 
             if (name.isEmpty() || description.isEmpty() || category == null) {
@@ -64,19 +86,27 @@ public class AddExpenseDialog extends JDialog {
                 return;
             }
 
-            BigDecimal amount = getExpenseAmount();
             if (amount.compareTo(BigDecimal.ZERO) <= 0) {
                 JOptionPane.showMessageDialog(this, "Amount must be greater than zero.", "Validation Error", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             try {
-                Expense expense = expenseService.createExpense(name, description, amount, category.getCategoryId(), UserSession.getInstance().getUserId());
-                expensePanel.addExpenseToTable(expense);
-                JOptionPane.showMessageDialog(this, "Expense added successfully!");
+                if (editingExpense == null) {
+                    Expense newExpense = new Expense(name, description, amount, category.getCategoryId(), UserSession.getInstance().getUserId());
+                    Expense created = expenseService.createOrUpdateExpense(newExpense);
+                    expensePanel.addExpenseToTable(created);
+                } else {
+                    editingExpense.setName(name);
+                    editingExpense.setDescription(description);
+                    editingExpense.setAmount(amount);
+                    editingExpense.setCategoryId(category.getCategoryId());
+                    expenseService.createOrUpdateExpense(editingExpense);
+                    expensePanel.updateExpenseInTable(editingExpense);
+                }
                 dispose();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                JOptionPane.showMessageDialog(this, "Error saving expense: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -100,13 +130,11 @@ public class AddExpenseDialog extends JDialog {
             return new BigDecimal(amountField.getText().trim());
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Invalid amount entered.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            return BigDecimal.ZERO; // or null depending on how you want to handle it
+            return BigDecimal.ZERO;
         }
     }
 
     public Category getSelectedCategory() {
         return (Category) categoryList.getSelectedItem();
     }
-
-
 }

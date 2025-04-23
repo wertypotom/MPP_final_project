@@ -70,6 +70,23 @@ public class ExpensePanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     }
 
+    public void updateExpenseInTable(Expense updatedExpense) {
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            Object obj = tableModel.getValueAt(i, 0);
+            if (obj instanceof Expense exp && exp.getExpenseId().equals(updatedExpense.getExpenseId())) {
+                tableModel.setValueAt(updatedExpense, i, 0);
+                tableModel.setValueAt(updatedExpense.getDescription(), i, 1);
+                tableModel.setValueAt(updatedExpense.getAmount(), i, 2);
+                try {
+                    tableModel.setValueAt(expenseService.getCategoryName(updatedExpense.getCategoryId()), i, 3);
+                } catch (SQLException e) {
+                    tableModel.setValueAt("?", i, 3); // fallback if lookup fails
+                }
+                break;
+            }
+        }
+    }
+
     private void loadExpenses() {
         try {
             List<Expense> expenses = expenseService.listExpenses(UserSession.getInstance().getUserId());

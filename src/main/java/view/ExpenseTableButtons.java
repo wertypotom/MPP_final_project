@@ -82,7 +82,23 @@ public class ExpenseTableButtons extends AbstractCellEditor implements TableCell
                 }
             }
         });
-        editButton.addActionListener(e -> fireEditingStopped());
+        editButton.addActionListener(e -> {
+            Object rawValue = expensePanel.tableModel.getValueAt(currentRow, 0);
+            if (!(rawValue instanceof Expense expense)) {
+                JOptionPane.showMessageDialog(expensePanel, "Unable to edit: invalid expense data", "Error", JOptionPane.ERROR_MESSAGE);
+                fireEditingStopped();
+                return;
+            }
+
+            try {
+                JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(expensePanel);
+                new AddExpenseDialog(parentFrame, expensePanel, expense).setVisible(true);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(expensePanel, "Failed to open edit dialog: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            fireEditingStopped();
+        });
     }
 
     @Override

@@ -90,7 +90,7 @@ public class Expense {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "createdDate", nullable = false, length = 19)
+    @Column(name = "createdOn", nullable = false, length = 19)
     public LocalDateTime getCreatedDateTimeStamp() {
         return createdDateTimeStamp;
     }
@@ -100,7 +100,7 @@ public class Expense {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "modifiedDate", nullable = false, length = 19)
+    @Column(name = "modifiedOn", nullable = false, length = 19)
     public LocalDateTime getModifiedDateTimeStamp() {
         return modifiedDateTimeStamp;
     }

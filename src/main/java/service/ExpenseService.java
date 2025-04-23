@@ -3,7 +3,6 @@ package service;
 import entity.Expense;
 import repository.ExpenseRepository;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -11,9 +10,13 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository = new ExpenseRepository();;
 
     // Create a new category
-    public Expense createExpense(String name, String description, BigDecimal amount,Integer categoryId, Integer userId) throws SQLException {
-        Expense expense = new Expense(name,description,amount,categoryId,userId);
-        return expenseRepository.createExpense(expense);
+    public Expense createOrUpdateExpense(Expense expense) throws SQLException {
+        if (expense.getExpenseId() == null) {
+            return expenseRepository.createExpense(expense);
+        } else {
+            expenseRepository.updateExpense(expense);
+            return expense;
+        }
     }
 
     // delete expense with specific id

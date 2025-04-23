@@ -14,6 +14,24 @@ public class ExpenseRepository {
     private final String categoryTable = DatabaseDialect.getProcessedTableName("Category");
 
 
+    public void updateExpense(Expense expense) throws SQLException {
+        String query = "UPDATE " + expenseTable + " SET name = ?, description = ?, amount = ?, categoryId = ? WHERE id = ?";
+        try (Connection connection = DatabaseUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, expense.getName());
+            statement.setString(2, expense.getDescription());
+            statement.setBigDecimal(3, expense.getAmount());
+            statement.setInt(4, expense.getCategoryId());
+            statement.setInt(5, expense.getExpenseId());
+
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Updating expense failed, no rows affected. Expense ID: " + expense.getExpenseId());
+            }
+        }
+    }
+
     public Expense createExpense(Expense expense) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
             String query = "INSERT INTO " + expenseTable + " (name, description, amount, categoryId, userId) VALUES (?,?,?,?,?)";
