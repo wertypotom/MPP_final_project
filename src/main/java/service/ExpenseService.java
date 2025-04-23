@@ -18,9 +18,9 @@ public class ExpenseService {
         expenseRepository.createExpense(expense);
     }
 
-    // Read all categories
-    public List<Expense> listExpenses() throws SQLException {
-        return expenseRepository.listExpenses();
+    // Read all expenses of user
+    public List<Expense> listExpenses(int userId) throws SQLException {
+        return expenseRepository.listExpenses(userId);
     }
 
     public String getCategoryName(Integer categoryId) throws SQLException {

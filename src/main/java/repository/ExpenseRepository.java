@@ -26,14 +26,14 @@ public class ExpenseRepository {
         }
     }
 
-    // Read all expenses
-    public List<Expense> listExpenses() throws SQLException {
+    // Read all expenses of user
+    public List<Expense> listExpenses(int userId) throws SQLException {
         List<Expense> expenses = new ArrayList<>();
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "SELECT * FROM " + table;
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-
+            String query = "SELECT * FROM " + table + " WHERE userId = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1,userId);
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");

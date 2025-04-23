@@ -1,6 +1,7 @@
 package view;
 
 import entity.Expense;
+import entity.UserSession;
 import entity.user.User;
 import service.CategoryService;
 import service.ExpenseService;
@@ -51,7 +52,7 @@ public class ExpensePanel extends JPanel {
 
     private void loadExpenses() {
         try {
-            List<Expense> expenses = expenseService.listExpenses();
+            List<Expense> expenses = expenseService.listExpenses(UserSession.getInstance().getUserId());
             tableModel.setRowCount(0);
 
             for (Expense expense : expenses) {
