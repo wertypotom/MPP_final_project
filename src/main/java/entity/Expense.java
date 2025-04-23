@@ -2,7 +2,6 @@ package entity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -116,4 +115,17 @@ public class Expense {
     private Integer categoryId;
     private Integer userId;
 
+    @Override
+    public String toString() {
+        return "Expense{" +
+                "expenseId=" + expenseId +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", amount=" + amount +
+                ", createdDateTimeStamp=" + createdDateTimeStamp +
+                ", modifiedDateTimeStamp=" + modifiedDateTimeStamp +
+                ", categoryId=" + categoryId +
+                ", userId=" + userId +
+                '}';
+    }
 }

@@ -3,7 +3,6 @@ package view;
 import entity.Expense;
 import entity.UserSession;
 import entity.user.User;
-import service.CategoryService;
 import service.ExpenseService;
 
 import javax.swing.*;
@@ -41,7 +40,7 @@ public class ExpensePanel extends JPanel {
         addButton.addActionListener(e -> {
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             try {
-                new AddExpenseDialog(parentFrame).setVisible(true);
+                new AddExpenseDialog(parentFrame, this).setVisible(true);
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -55,6 +54,7 @@ public class ExpensePanel extends JPanel {
             List<Expense> expenses = expenseService.listExpenses(UserSession.getInstance().getUserId());
             tableModel.setRowCount(0);
 
+            System.out.println("Expense count: " + expenses);
             for (Expense expense : expenses) {
                 tableModel.addRow(new Object[]{
                         expense.getExpenseId(),
@@ -62,12 +62,25 @@ public class ExpensePanel extends JPanel {
                         expense.getDescription(),
                         expense.getAmount(),
                         expenseService.getCategoryName(expense.getCategoryId())
-
                 });
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Failed to load expenses:\n" + ex.getMessage(),
                     "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void addExpenseToTable(Expense expense) {
+        try {
+            tableModel.addRow(new Object[]{
+                    expense.getExpenseId(),
+                    expense.getName(),
+                    expense.getDescription(),
+                    expense.getAmount(),
+                    expenseService.getCategoryName(expense.getCategoryId())
+            });
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Failed to load category name:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

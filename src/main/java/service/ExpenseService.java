@@ -1,8 +1,6 @@
 package service;
 
-import entity.Category;
 import entity.Expense;
-import repository.CategoryRepository;
 import repository.ExpenseRepository;
 
 import java.math.BigDecimal;
@@ -13,9 +11,9 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository = new ExpenseRepository();;
 
     // Create a new category
-    public void createExpense(String name, String description, BigDecimal amount,Integer categoryId, Integer userId) throws SQLException {
+    public Expense createExpense(String name, String description, BigDecimal amount,Integer categoryId, Integer userId) throws SQLException {
         Expense expense = new Expense(name,description,amount,categoryId,userId);
-        expenseRepository.createExpense(expense);
+        return expenseRepository.createExpense(expense);
     }
 
     // Read all expenses of user

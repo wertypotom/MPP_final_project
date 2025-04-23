@@ -1,6 +1,7 @@
 package view;
 
 import entity.Category;
+import entity.Expense;
 import entity.UserSession;
 import service.CategoryService;
 import service.ExpenseService;
@@ -18,10 +19,11 @@ public class AddExpenseDialog extends JDialog {
     private final JTextField descriptionField = new JTextField(20);
     private final JTextField amountField = new JTextField(10);
     private final JComboBox<Category> categoryList = new JComboBox<>();
+    private final ExpensePanel expensePanel;
 
-
-    public AddExpenseDialog(JFrame parent) throws SQLException {
+    public AddExpenseDialog(JFrame parent, ExpensePanel expensePanel) throws SQLException {
         super(parent, "Add Expense", true);
+        this.expensePanel = expensePanel;
         setSize(350, 300);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
@@ -69,7 +71,8 @@ public class AddExpenseDialog extends JDialog {
             }
 
             try {
-                expenseService.createExpense(name, description, amount, category.getCategoryId(), UserSession.getInstance().getUserId());
+                Expense expense = expenseService.createExpense(name, description, amount, category.getCategoryId(), UserSession.getInstance().getUserId());
+                expensePanel.addExpenseToTable(expense);
                 JOptionPane.showMessageDialog(this, "Expense added successfully!");
                 dispose();
             } catch (SQLException ex) {

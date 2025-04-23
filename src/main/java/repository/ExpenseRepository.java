@@ -10,19 +10,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExpenseRepository {
-    private final String table = DatabaseDialect.getProcessedTableName("Expense");
+    private final String expenseTable = DatabaseDialect.getProcessedTableName("Expense");
+    private final String categoryTable = DatabaseDialect.getProcessedTableName("Category");
 
-    public void createExpense(Expense expense) throws SQLException {
+
+    public Expense createExpense(Expense expense) throws SQLException {
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "INSERT INTO " + table + " (name, description, amount, categoryId, userId) VALUES (?,?,?,?,?)";
-            PreparedStatement statement = connection.prepareStatement(query);
+            String query = "INSERT INTO " + expenseTable + " (name, description, amount, categoryId, userId) VALUES (?,?,?,?,?)";
+            PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, expense.getName());
             statement.setString(2, expense.getDescription());
             statement.setBigDecimal(3, expense.getAmount());
-            //statement.setTimestamp(4, java.sql.Timestamp.valueOf(expense.getCreatedDateTimeStamp()));
             statement.setInt(4, expense.getCategoryId());
-            statement.setInt(5,expense.getUserId());
+            statement.setInt(5, expense.getUserId());
             statement.executeUpdate();
+
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int generatedId = generatedKeys.getInt(1);
+                expense.setExpenseId(generatedId);
+            }
+            return expense;
         }
     }
 
@@ -30,7 +38,7 @@ public class ExpenseRepository {
     public List<Expense> listExpenses(int userId) throws SQLException {
         List<Expense> expenses = new ArrayList<>();
         try (Connection connection = DatabaseUtil.getConnection()) {
-            String query = "SELECT * FROM " + table + " WHERE userId = ?";
+            String query = "SELECT * FROM " + expenseTable + " WHERE userId = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1,userId);
             ResultSet resultSet = statement.executeQuery();
@@ -51,7 +59,7 @@ public class ExpenseRepository {
     public String getCategoryName(Integer catId) throws SQLException {
         String categoryName = "";
 
-        String query = "SELECT name FROM category WHERE id = ?";
+        String query = "SELECT name FROM " + categoryTable + " WHERE id = ?";
 
         try (Connection connection = DatabaseUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
