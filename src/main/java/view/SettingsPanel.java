@@ -1,5 +1,6 @@
 package view;
 
+import entity.UserSession;
 import entity.user.User;
 import entity.user.Admin;
 
@@ -26,7 +27,10 @@ public class SettingsPanel {
         menu.add(reportItem);
 
         JMenuItem logoutItem = new JMenuItem("Log Out");
-        logoutItem.addActionListener(e -> onLogout.run());
+        logoutItem.addActionListener(e -> {
+            UserSession.getInstance().clear();
+            onLogout.run();
+        });
         menu.add(logoutItem);
 
         menu.show(anchor, anchor.getWidth() - 10, anchor.getHeight());

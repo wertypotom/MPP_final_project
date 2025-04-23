@@ -1,5 +1,6 @@
 package view;
 
+import entity.UserSession;
 import entity.user.User;
 import service.UserService;
 
@@ -41,6 +42,7 @@ public class LoginView extends JFrame {
 
             try {
                 User user = userService.loginUser(email, password);
+                UserSession.getInstance().setUser(user.getUserId(),user.getName());
                 onLoginSuccess.accept(user);
             } catch (SQLException ex) {
                 new LoginFailedDialog(this).setVisible(true);

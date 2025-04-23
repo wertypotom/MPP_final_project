@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ReportRepository {
 
-    public List<ExpenseReport> getExpenseReport(String fromDate, String toDate, int catId) throws SQLException {
+    public List<ExpenseReport> getExpenseReport(int userId, String fromDate, String toDate, int catId) throws SQLException {
         List<ExpenseReport> reportData = new ArrayList<>();
 
         String query =
@@ -19,7 +19,7 @@ public class ReportRepository {
                         "c.name AS categoryName " +
                         "FROM expense e " +
                         "JOIN category c ON e.categoryId = c.id " +
-                        "WHERE Date(e.createdOn) BETWEEN ? AND ?";
+                        "WHERE e.userId = ? AND Date(e.createdOn) BETWEEN ? AND ?";
 
         if (catId != 0) {
             query += " AND e.categoryId = ?";
@@ -27,10 +27,11 @@ public class ReportRepository {
 
         try (Connection connection = DatabaseUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, fromDate);
-            statement.setString(2, toDate);
+            statement.setInt(1, userId);
+            statement.setString(2, fromDate);
+            statement.setString(3, toDate);
             if (catId != 0) {
-                statement.setInt(3, catId);
+                statement.setInt(4, catId);
             }
 
             ResultSet resultSet = statement.executeQuery();

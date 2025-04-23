@@ -1,6 +1,7 @@
 package view;
 
 import entity.Expense;
+import entity.user.User;
 import service.CategoryService;
 import service.ExpenseService;
 
@@ -14,7 +15,10 @@ public class ExpensePanel extends JPanel {
     private JTable expenseTable;
     private DefaultTableModel tableModel;
     private final ExpenseService expenseService = new ExpenseService();
+    private User user;
+
     public ExpensePanel() {
+        this.user = user;
         setLayout(new BorderLayout());
         initTable();
         initToolbar();

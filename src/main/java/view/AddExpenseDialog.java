@@ -1,6 +1,7 @@
 package view;
 
 import entity.Category;
+import entity.UserSession;
 import service.CategoryService;
 import service.ExpenseService;
 
@@ -68,7 +69,7 @@ public class AddExpenseDialog extends JDialog {
             }
 
             try {
-                expenseService.createExpense(name, description, amount, category.getCategoryId(), 3); // 3 is temporary and will be replaced
+                expenseService.createExpense(name, description, amount, category.getCategoryId(), UserSession.getInstance().getUserId());
                 JOptionPane.showMessageDialog(this, "Expense added successfully!");
                 dispose();
             } catch (SQLException ex) {

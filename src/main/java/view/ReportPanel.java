@@ -1,6 +1,7 @@
 package view;
 
 import entity.Category;
+import entity.UserSession;
 import entity.report.ExpenseReport;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
@@ -9,9 +10,11 @@ import service.CategoryService;
 import service.ReportService;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -25,6 +28,7 @@ public class ReportPanel extends JPanel {
     private JLabel totalAmountLabel;
 
     private final ReportService reportService = new ReportService();
+    NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
 
     public ReportPanel() {
         setLayout(new BorderLayout());
@@ -76,6 +80,7 @@ public class ReportPanel extends JPanel {
         String[] columns = {"Date", "Category", "Amount", "Description"};
         tableModel = new DefaultTableModel(columns, 0);
         expenseTable = new JTable(tableModel);
+
         JScrollPane scrollPane = new JScrollPane(expenseTable);
         add(scrollPane, BorderLayout.CENTER);
 
@@ -91,7 +96,6 @@ public class ReportPanel extends JPanel {
 
     private void loadReport() {
         try {
-            // Extract date values
             Date from = (Date) fromDatePicker.getModel().getValue();
             Date to = (Date) toDatePicker.getModel().getValue();
 
@@ -100,7 +104,6 @@ public class ReportPanel extends JPanel {
                 return;
             }
 
-            // Format for DB
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String fromDate = sdf.format(from);
             String toDate = sdf.format(to);
@@ -108,21 +111,31 @@ public class ReportPanel extends JPanel {
             Category selectedCategory = (Category) categoryBox.getSelectedItem();
             int categoryId = selectedCategory != null ? selectedCategory.getCategoryId() : 0;
 
-            // Fetch from service
-            List<ExpenseReport> data = reportService.getExpenseReport(fromDate, toDate, categoryId);
+            List<ExpenseReport> data = reportService.getExpenseReport(UserSession.getInstance().getUserId(), fromDate, toDate, categoryId);
             double totalAmount = 0.0;
-            // Populate table
             tableModel.setRowCount(0);
+            DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                    JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                    label.setHorizontalAlignment(SwingConstants.RIGHT);
+                    label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 6));
+                    return label;
+                }
+            };
+            expenseTable.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
+
+
             for (ExpenseReport d : data) {
                 tableModel.addRow(new Object[]{
                         d.getDate(),
                         d.getCategoryName(),
-                        d.getAmount(),
+                        currencyFormat.format(d.getAmount()),
                         d.getDescription()
                 });
                 totalAmount += d.getAmount();
             }
-            totalAmountLabel.setText(String.format("Total Amount: %.2f", totalAmount));
+            totalAmountLabel.setText("Total Amount: " + currencyFormat.format(totalAmount));
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Failed to load report:\n" + e.getMessage(),
                     "Database Error", JOptionPane.ERROR_MESSAGE);

@@ -9,10 +9,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ReportService {
-    private final ReportRepository reportRepository = new ReportRepository();;
+    private final ReportRepository reportRepository = new ReportRepository();
 
-    public List<ExpenseReport> getExpenseReport(String fromDate, String toDate, int catId) throws SQLException {
-        return reportRepository.getExpenseReport(fromDate,toDate,catId);
+    public List<ExpenseReport> getExpenseReport(int userId, String fromDate, String toDate, int catId) throws SQLException {
+        return reportRepository.getExpenseReport(userId, fromDate, toDate, catId);
     }
 
 }
