@@ -54,7 +54,7 @@ public class ExpenseTableButtons extends AbstractCellEditor implements TableCell
 
         deleteButton.addActionListener(e -> {
             int modelRow = expensePanel.expenseTable.getEditingRow();
-            fireEditingStopped(); // 🔐 Stop editing BEFORE removing the row
+            fireEditingStopped();
 
             Object rawValue = expensePanel.tableModel.getValueAt(modelRow, 0);
             if (!(rawValue instanceof Expense expense)) {
@@ -76,7 +76,7 @@ public class ExpenseTableButtons extends AbstractCellEditor implements TableCell
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
                     expensePanel.expenseService.deleteExpense(expense.getExpenseId());
-                    expensePanel.tableModel.removeRow(modelRow);
+                    expensePanel.removeExpenseFromTable(modelRow, expense.getExpenseId());
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(expensePanel, "Failed to delete expense:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
