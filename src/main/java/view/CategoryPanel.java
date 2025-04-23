@@ -9,20 +9,18 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
-import java.awt.Component;
 
 public class CategoryPanel extends JPanel {
     JTable categoryTable;
     DefaultTableModel tableModel;
     final CategoryService categoryService = new CategoryService();
-    private User user;
+    private List<Category> allCategories = new ArrayList<>();
 
     public CategoryPanel(User user) {
-        this.user = user;
         setLayout(new BorderLayout());
         initTable();
         initToolbar();
@@ -84,7 +82,12 @@ public class CategoryPanel extends JPanel {
 
         addButton.addActionListener(e -> {
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-            AddCategoryDialog dialog = new AddCategoryDialog(parentFrame, user);
+            AddCategoryDialog dialog = null;
+            try {
+                dialog = new AddCategoryDialog(parentFrame, this);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             dialog.setVisible(true);
 
             loadCategories();
@@ -97,10 +100,10 @@ public class CategoryPanel extends JPanel {
 
     private void loadCategories() {
         try {
-            List<Category> categories = categoryService.listCategories();
+            allCategories = categoryService.listCategories();
             tableModel.setRowCount(0); // Clear existing rows
 
-            for (Category category : categories) {
+            for (Category category : allCategories) {
                 tableModel.addRow(new Object[]{
                         category,
                         category.getCategoryName(),
@@ -112,5 +115,19 @@ public class CategoryPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Failed to load categories:\n" + e.getMessage(),
                     "Database Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void updateCategoryInTable(Category updatedCategory) {
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            Object obj = tableModel.getValueAt(i, 0);
+            if (obj instanceof Category c && c.getCategoryId() == updatedCategory.getCategoryId()) {
+                tableModel.setValueAt(updatedCategory, i, 0);
+                tableModel.setValueAt(updatedCategory.getCategoryName(), i, 1);
+                tableModel.setValueAt(updatedCategory.getDescription(), i, 2);
+                break;
+            }
+        }
+        allCategories.removeIf(e -> e.getCategoryId() == updatedCategory.getCategoryId());
+        allCategories.add(updatedCategory);
     }
 }

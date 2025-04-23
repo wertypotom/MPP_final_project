@@ -11,8 +11,8 @@ public class CategoryService {
     ;
 
     // Create a new category
-    public void createCategory(String name, String description, int createdUserId) throws SQLException {
-        Category category = new Category(name, description, createdUserId);
+    public void createCategory(Category category) throws SQLException {
+
         categoryRepository.createCategory(category);
     }
 
@@ -22,8 +22,7 @@ public class CategoryService {
     }
 
     // Create a new category
-    public void updateCategory(int id, String name, String description, int modifiedUserId) throws SQLException {
-        Category category = new Category(id, name, description, modifiedUserId);
+    public void updateCategory(Category category) throws SQLException {
         categoryRepository.updateCategory(category);
     }
 
