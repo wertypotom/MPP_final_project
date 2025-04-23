@@ -46,4 +46,36 @@ public class CategoryRepository {
         }
         return categories;
     }
+
+    public void updateCategory(Category category) throws SQLException {
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String query = "UPDATE " + table + " SET name = ?, description = ?, modifiedUserId = ? WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, category.getCategoryName());
+            statement.setString(2, category.getDescription());
+            statement.setInt(3, category.getModifiedUserId());
+            statement.setInt(4, category.getCategoryId());
+
+            System.out.println("Category statement: " + statement.toString());
+
+            statement.executeUpdate();
+
+            System.out.println("Category updated successfully");
+        }
+    }
+    public void deleteCategory(int id) throws SQLException {
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String query = "DELETE FROM " + table + " WHERE id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+//            statement.setInt(3, category.getCreatedUserId());
+//            statement.setInt(4, category.getCreatedUserId());
+
+            System.out.println("Category statement: " + statement.toString());
+
+            statement.executeUpdate();
+
+            System.out.println("Category updated successfully");
+        }
+    }
 }
