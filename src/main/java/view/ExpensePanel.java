@@ -2,11 +2,15 @@ package view;
 
 import entity.Expense;
 import entity.UserSession;
+import entity.user.Admin;
+import entity.user.User;
 import service.ExpenseService;
+import service.UserService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,19 +18,47 @@ import java.util.List;
 public class ExpensePanel extends JPanel {
     JTable expenseTable;
     DefaultTableModel tableModel;
+    private JProgressBar budgetProgressBar;
     final ExpenseService expenseService = new ExpenseService();
+    final User user;
     private List<Expense> allExpenses = new ArrayList<>();
+    private BigDecimal budgetLimit = BigDecimal.ZERO;
 
-    public ExpensePanel() {
+    public ExpensePanel(User user) {
+        this.user = user;
         setLayout(new BorderLayout());
         add(new ExpenseSearchBar(this::filterTable), BorderLayout.NORTH);
+        if (!(user instanceof Admin)) {
+            this.budgetLimit = user.getBudgetLimit();
+            initBudgetProgressBar();
+        }
         initToolbar();
         initTable();
         loadExpenses();
     }
 
+    //    private void initToolbar() {
+//        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+//        JButton addButton = new JButton("Add Expense");
+//        addButton.addActionListener(e -> {
+//            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+//            try {
+//                new AddExpenseDialog(parentFrame, this).setVisible(true);
+//            } catch (SQLException ex) {
+//                JOptionPane.showMessageDialog(this, "Failed to open dialog: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//            }
+//        });
+//        toolbar.add(addButton);
+//        add(toolbar, BorderLayout.SOUTH);
+//    }
     private void initToolbar() {
-        JPanel toolbar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel toolbar = new JPanel(new BorderLayout());
+        if (!(user instanceof Admin)) {
+            initBudgetProgressBar();
+            toolbar.add(budgetProgressBar, BorderLayout.NORTH);
+        }
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton addButton = new JButton("Add Expense");
         addButton.addActionListener(e -> {
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
@@ -36,7 +68,9 @@ public class ExpensePanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Failed to open dialog: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        toolbar.add(addButton);
+        buttonPanel.add(addButton);
+
+        toolbar.add(buttonPanel, BorderLayout.SOUTH);
         add(toolbar, BorderLayout.SOUTH);
     }
 
@@ -91,17 +125,26 @@ public class ExpensePanel extends JPanel {
         }
         allExpenses.removeIf(e -> e.getExpenseId().equals(updatedExpense.getExpenseId()));
         allExpenses.add(updatedExpense);
+        if (!(user instanceof Admin)) {
+            updateBudgetProgressBar();
+        }
     }
 
     public void removeExpenseFromTable(int modelRow, int expenseId) {
         tableModel.removeRow(modelRow);
         allExpenses.removeIf(e -> e.getExpenseId().equals(expenseId));
+        if (!(user instanceof Admin)) {
+            updateBudgetProgressBar();
+        }
     }
 
     private void loadExpenses() {
         try {
             allExpenses = expenseService.listExpenses(UserSession.getInstance().getUserId());
             updateTable(allExpenses);
+            if (!(user instanceof Admin)) {
+                updateBudgetProgressBar();
+            }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Failed to load expenses:\n" + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -170,8 +213,31 @@ public class ExpensePanel extends JPanel {
                     expense.getCreatedDateTimeStamp().toLocalDate(),
                     null
             });
+            if (!(user instanceof Admin)) {
+                updateBudgetProgressBar();
+            }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Failed to load category name:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    private void initBudgetProgressBar() {
+        budgetProgressBar = new JProgressBar(0, budgetLimit.intValue());
+        budgetProgressBar.setStringPainted(true);
+    }
+
+    private void updateBudgetProgressBar() {
+        BigDecimal total = allExpenses.stream()
+                .map(Expense::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        int totalInt = total.intValue(); // for progress bar (truncates decimals)
+        budgetProgressBar.setMaximum(budgetLimit.intValue()); // budgetLimit is BigDecimal
+        budgetProgressBar.setValue(totalInt);
+        budgetProgressBar.setString("Budget Used: $" + total + " / $" + budgetLimit);
+        budgetProgressBar.setForeground(total.compareTo(budgetLimit) > 0
+                ? Color.RED
+                : new Color(0, 128, 0));
+    }
+
 }

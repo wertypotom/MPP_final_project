@@ -32,7 +32,7 @@ public class MainView extends JFrame {
         add(topPanel, BorderLayout.NORTH);
 
         // Views
-        views.put("home", new ExpensePanel());
+        views.put("home", new ExpensePanel(user));
         views.put("categories", new CategoryPanel(user));
         views.put("report", new ReportPanel());
 
