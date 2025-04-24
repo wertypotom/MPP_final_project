@@ -59,7 +59,7 @@ public class CategoryTableButtons extends AbstractCellEditor implements TableCel
 
             Object rawValue = categoryPanel.tableModel.getValueAt(modelRow, 0);
             if (!(rawValue instanceof Category category)) {
-                JOptionPane.showMessageDialog(categoryPanel, "Unable to delete: invalid expense data", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(categoryPanel, "Unable to delete: invalid category data", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -83,7 +83,23 @@ public class CategoryTableButtons extends AbstractCellEditor implements TableCel
                 }
             }
         });
-        editButton.addActionListener(e -> fireEditingStopped());
+        editButton.addActionListener(e -> {
+            Object rawValue = categoryPanel.tableModel.getValueAt(currentRow, 0);
+            if (!(rawValue instanceof Category category)) {
+                JOptionPane.showMessageDialog(categoryPanel, "Unable to edit: invalid expense data", "Error", JOptionPane.ERROR_MESSAGE);
+                fireEditingStopped();
+                return;
+            }
+
+            try {
+                JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(categoryPanel);
+                new AddCategoryDialog(parentFrame, categoryPanel, category).setVisible(true);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(categoryPanel, "Failed to open edit dialog: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            fireEditingStopped();
+        });
     }
 
     @Override
