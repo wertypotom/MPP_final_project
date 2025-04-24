@@ -146,8 +146,6 @@ public class ExpensePanel extends JPanel {
             return;
         }
 
-        System.out.println("allExpenses " + allExpenses);
-
         List<Expense> filtered = allExpenses.stream().filter(e ->
                 e.getName().toLowerCase().contains(text) ||
                         e.getDescription().toLowerCase().contains(text) ||
